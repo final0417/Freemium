@@ -10,8 +10,9 @@ st.set_page_config(
     )
 
 df=pd.read_csv('portfolioSymbol.csv')
+st.write(df)
 
-def modified_string(original_string):
+'''def modified_string(original_string):
     index = original_string.find('\\')
     result_string = original_string[index + 1:]
     return result_string
@@ -208,4 +209,4 @@ if submit_form and flag:
                 st.write(f"<span style='color:red'>{round(i[1], 2)}</span>", unsafe_allow_html=True)
 
 
-update_metric(metric1, metric2, metric3,portfolio_number,pulsecoin,remaining)
+update_metric(metric1, metric2, metric3,portfolio_number,pulsecoin,remaining)'''
