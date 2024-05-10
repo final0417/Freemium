@@ -10,9 +10,8 @@ st.set_page_config(
     )
 
 df=pd.read_csv('portfolioSymbol.csv')
-st.write(df)
 
-"""def modified_string(original_string):
+def modified_string(original_string):
     index = original_string.find('\\')
     result_string = original_string[index + 1:]
     return result_string
@@ -20,6 +19,7 @@ st.write(df)
 def add_industry(df,time):
     for i in df.columns:
         file=i+"_output_"+time+".csv"
+        st.write(file)
         data=pd.read_csv(file)
         data["Industry"]=i
         data.to_csv(file,index=False)
@@ -209,4 +209,4 @@ if submit_form and flag:
                 st.write(f"<span style='color:red'>{round(i[1], 2)}</span>", unsafe_allow_html=True)
 
 
-update_metric(metric1, metric2, metric3,portfolio_number,pulsecoin,remaining)"""
+update_metric(metric1, metric2, metric3,portfolio_number,pulsecoin,remaining)
