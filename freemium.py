@@ -40,6 +40,7 @@ def csv_to_dict(df,time):
     return data_dict
 
 def create_data(df,time):
+    time=time.lower()
     list=[]
     for i in df.columns:
         folder_name=i
