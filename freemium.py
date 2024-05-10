@@ -9,6 +9,17 @@ st.set_page_config(
         layout="wide"
     )
 
+with st.sidebar:
+    col1, col2, col3 = st.columns([2, 3, 2])
+    with col2:
+        st.image("logo.png")
+    selected = option_menu(
+        menu_title="Premium Features",
+        options=["Advanced AI Generated Portfolio", "Real Time Stock Analysis", "24/7 Customer Support", "Real-time-markrt-updates"],
+        menu_icon="graph-up-arrow",
+        default_index=0,
+    )
+
 df=pd.read_csv('portfolioSymbol.csv')
 
 def modified_string(original_string):
