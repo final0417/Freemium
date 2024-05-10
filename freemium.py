@@ -17,6 +17,7 @@ def modified_string(original_string):
     return result_string
 
 def add_industry(df,time):
+    time=time.lower()
     for i in df.columns:
         file=i+"_output_"+time+".csv"
         st.write(file)
