@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from streamlit_option_menu import option_menu
 import time
 import itertools
 
@@ -8,17 +7,6 @@ st.set_page_config(
         page_title="StockPulse",
         page_icon="coin",
         layout="wide"
-    )
-
-with st.sidebar:
-    col1, col2, col3 = st.columns([2, 3, 2])
-    with col2:
-        st.image("logo.png")
-    selected = option_menu(
-        menu_title="Premium Features",
-        options=["Asol Stock", "Full Ai Dependent", "Custom Alerts", "Good customer support"],
-        menu_icon="graph-up-arrow",
-        default_index=0,
     )
 
 df=pd.read_csv('portfolioSymbol.csv')
