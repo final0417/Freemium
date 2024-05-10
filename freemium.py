@@ -22,6 +22,7 @@ def add_industry(df,time):
         file=i+"_output_"+time+".csv"
         st.write(file)
         data=pd.read_csv(file)
+        st.write(data)
         data["Industry"]=i
         data.to_csv(file,index=False)
 
