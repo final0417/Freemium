@@ -17,7 +17,7 @@ with st.sidebar:
     selected = option_menu(
         menu_title="Premium Features",
         options=["Advanced AI Generated Portfolio", "Real Time Stock Analysis", "24/7 Customer Support", "Real-time-markrt-updates"],
-        icons=["gem","gem","gem","gem"]
+        icons=["gem","gem","gem","gem"],
         menu_icon="graph-up-arrow",
         default_index=0,
     )
