@@ -111,7 +111,7 @@ with col1:
 with col7:
     st.markdown('<style>img {border-radius: 200px;}</style>', unsafe_allow_html=True)
     st.image("dp.jpg", width=50)
-st.markdown("""---""")
+st.markdown('''---''')
 
 st.markdown('<h3> On this page, you can create a sample portfolio using our virtual currency to see how it functions.</h3>',unsafe_allow_html=True)
 
