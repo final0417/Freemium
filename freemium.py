@@ -4,6 +4,16 @@ import time
 import itertools
 from streamlit_option_menu import option_menu
 
+data_login = pd.read_csv('login.csv')
+user_id = data_login['ID'].iloc[-1]
+
+data_profiles=pd.read_csv('freemium_db.csv')
+user=data_profiles[data_profiles['ID']==user_id]
+
+portfolio_number=user['Portfolio_No'].values[0]
+pulsecoin=user['Exp'].values[0]
+remaining=user['Amount'].values[0]
+
 st.set_page_config(
         page_title="StockPulse",
         page_icon="coin",
@@ -116,9 +126,7 @@ def update_metric(m1,m2,m3,pn,pc,r):
     m2.metric("Coins", pc)
     m3.metric("Coins", r)
 
-portfolio_number=0
-pulsecoin=0.00
-remaining=10000.00
+
 col1,col2,col3,col4,col5,col6,col7=st.columns([7,1,1,1,1,1,3])
 with col1:
     st.markdown('<h1 style="color: #00ffff;">😎 Freemium</h1>', unsafe_allow_html=True)
@@ -144,7 +152,7 @@ st.markdown('''---''')
 with st.form(key='form1'):
     col1, col2 = st.columns(2)
     with col1:
-        amount=st.number_input("Enter the Amount You want to Invest (Min 500 Coins) :",min_value=500.00,key=int,)
+        amount=st.number_input("Enter the Amount You want to Invest (Min 500 Coins) :",min_value=500.00,max_value=remaining,key=float,)
         if amount<500:
             st.error("Minimum 500 Coins should be invested")
     with col2:
@@ -191,6 +199,10 @@ if submit_form and flag:
     pulsecoin="{:.2f}".format(total)
     remaining="{:.2f}".format(remaining-total)
 
+    pulsecoin=float(data_profiles['Exp'].values[0])+float(pulsecoin)
+
+    data_profiles.loc[data_profiles['ID'] == user_id, ['Portfolio_No','Exp','Amount']] = [portfolio_number,pulsecoin,remaining]
+
     col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
     with col1:
         st.info("Company Name: ")
@@ -222,5 +234,6 @@ if submit_form and flag:
             else:
                 st.write(f"<span style='color:red'>{round(i[1], 2)}</span>", unsafe_allow_html=True)
 
-
-update_metric(metric1, metric2, metric3,portfolio_number,pulsecoin,remaining)
+answer=10000.00-float(remaining)
+update_metric(metric1, metric2, metric3,int(data_profiles.loc[data_profiles['ID'] ==user_id, 'Portfolio_No']),answer,float(data_profiles.loc[data_profiles['ID'] ==user_id, 'Amount']))
+data_profiles.to_csv('freemium_db.csv',index=False)
