@@ -1,8 +1,12 @@
+import numpy as np
 import streamlit as st
 import pandas as pd
 import time
 import itertools
 from streamlit_option_menu import option_menu
+import ast
+import math
+
 
 data_login = pd.read_csv('login.csv')
 user_id = data_login['ID'].iloc[-1]
@@ -10,9 +14,10 @@ user_id = data_login['ID'].iloc[-1]
 data_profiles=pd.read_csv('freemium_db.csv')
 user=data_profiles[data_profiles['ID']==user_id]
 
-portfolio_number=user['Portfolio_No'].values[0]
-pulsecoin=user['Exp'].values[0]
-remaining=user['Amount'].values[0]
+portfolio_number=int(user['Portfolio_No'].values[0])
+pulsecoin=float(user['Exp'].values[0])
+remaining=float(user['Amount'].values[0])
+
 
 st.set_page_config(
         page_title="StockPulse",
@@ -24,7 +29,7 @@ with st.sidebar:
     col1, col2, col3 = st.columns([2, 3, 2])
     with col2:
         st.image("logo.png")
-    selected = option_menu(
+    option_menu(
         menu_title="Premium Features",
         options=["Advanced AI Generated Portfolio", "Real Time Stock Analysis", "24/7 Customer Support", "Real-time-markrt-updates"],
         icons=["gem","gem","gem","gem"],
@@ -126,7 +131,6 @@ def update_metric(m1,m2,m3,pn,pc,r):
     m2.metric("Coins", pc)
     m3.metric("Coins", r)
 
-
 col1,col2,col3,col4,col5,col6,col7=st.columns([7,1,1,1,1,1,3])
 with col1:
     st.markdown('<h1 style="color: #00ffff;">😎 Freemium</h1>', unsafe_allow_html=True)
@@ -152,9 +156,11 @@ st.markdown('''---''')
 with st.form(key='form1'):
     col1, col2 = st.columns(2)
     with col1:
-        amount=st.number_input("Enter the Amount You want to Invest (Min 500 Coins) :",min_value=500.00,max_value=remaining,key=float,)
+        amount=st.number_input("Enter the Amount You want to Invest (Min 500 Coins) :",min_value=500.00,key=float,)
         if amount<500:
             st.error("Minimum 500 Coins should be invested")
+        elif amount>remaining:
+            st.error("Insufficient Coins")
     with col2:
         value=st.select_slider("How Much Risk You Want :",options=["Low","Low","Low","Low","High","High","High","High"])
     col1,col2=st.columns(2)
@@ -199,40 +205,54 @@ if submit_form and flag:
     pulsecoin="{:.2f}".format(total)
     remaining="{:.2f}".format(remaining-total)
 
+
+    index="Portfolio"+str(portfolio_number)
+    y=str(y)
+    data_profiles.loc[data_profiles['ID']==user_id,[index]]=[y]
+
     pulsecoin=float(data_profiles['Exp'].values[0])+float(pulsecoin)
 
     data_profiles.loc[data_profiles['ID'] == user_id, ['Portfolio_No','Exp','Amount']] = [portfolio_number,pulsecoin,remaining]
 
-    col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
-    with col1:
-        st.info("Company Name: ")
-    with col2:
-        st.warning("Quantity")
-    with col3:
-        st.success("Current Price")
-    with col4:
-        st.error("Purchase Price")
-    for i in y:
+
+    for u in range(1,portfolio_number+1):
+        stri="Portfolio"+str(u)
+        matching_row = data_profiles.loc[data_profiles['ID'] == user_id]
+        column_to_print = stri
+        string_list = matching_row[column_to_print].values[0]
+        actual_list = ast.literal_eval(string_list)
+        st.subheader(f"{stri}")
         col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
-        s = i[0]
-        result = data1[data1['Symbol'] == s]
-        if not result.empty:
-            price = result['Price'].iloc[0]
-            name = result['Company'].iloc[0]
         with col1:
-            st.write(name)
+            st.info("Company Name: ")
         with col2:
-            st.write(f"<span style='color:yellow'>{i[3]}</span>", unsafe_allow_html=True)
+            st.warning("Quantity")
         with col3:
-            if price < round(i[1]):
-                st.write(f"<span style='color:red'>{price}</span>", unsafe_allow_html=True)
-            else:
-                st.write(f"<span style='color:green'>{price}</span>", unsafe_allow_html=True)
+            st.success("Current Price")
         with col4:
-            if price < round(i[1]):
-                st.write(f"<span style='color:orange'>{round(i[1], 2)}</span>", unsafe_allow_html=True)
-            else:
-                st.write(f"<span style='color:red'>{round(i[1], 2)}</span>", unsafe_allow_html=True)
+            st.error("Purchase Price")
+        for i in actual_list:
+            col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
+            s = i[0]
+            result = data1[data1['Symbol'] == s]
+            if not result.empty:
+                price = result['Price'].iloc[0]
+                name = result['Company'].iloc[0]
+            with col1:
+                st.write(name)
+            with col2:
+                st.write(f"<span style='color:yellow'>{i[3]}</span>", unsafe_allow_html=True)
+            with col3:
+                if price < round(i[1]):
+                    st.write(f"<span style='color:red'>{price}</span>", unsafe_allow_html=True)
+                else:
+                    st.write(f"<span style='color:green'>{price}</span>", unsafe_allow_html=True)
+            with col4:
+                if price < round(i[1]):
+                    st.write(f"<span style='color:orange'>{round(i[1], 2)}</span>", unsafe_allow_html=True)
+                else:
+                    st.write(f"<span style='color:red'>{round(i[1], 2)}</span>", unsafe_allow_html=True)
+
 
 answer=10000.00-float(remaining)
 update_metric(metric1, metric2, metric3,int(data_profiles.loc[data_profiles['ID'] ==user_id, 'Portfolio_No']),answer,float(data_profiles.loc[data_profiles['ID'] ==user_id, 'Amount']))
